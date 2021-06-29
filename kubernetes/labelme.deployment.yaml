@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: labelme
+  labels:
+    app: labelme
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: labelme
+  template:
+    metadata:
+      labels:
+        app: labelme
+    spec:
+      containers:
+      - name: labelme
+        image: iperezx/labelme:latest 
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: iacq
+          mountPath: dynamic 
+        - name: labelme
+          mountPath: /var/www/html/LabelMeAnnotationTool/Annotations
+      volumes:
+      - name: labelme
+        persistentVolumeClaim:
+          claimName: labelme
+      - name: iacq
+        persistentVolumeClaim:
+          claimName: iacq
+      restartPolicy: Always
